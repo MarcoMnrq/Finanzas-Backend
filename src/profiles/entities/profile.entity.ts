@@ -1,4 +1,4 @@
-import { Entity, OneToMany, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { User } from '../../users/entities/user.entity';
 import { LegalPerson } from '../../legal-persons/entities/legal-person.entity';
 import { NaturalPerson } from '../../natural-persons/entities/natural-person.entity';
@@ -19,8 +19,10 @@ export class Profile {
   buyBonds: Bond[];
 
   @OneToOne(() => LegalPerson, (legalPerson) => legalPerson.profile)
+  @JoinColumn()
   legalPerson: LegalPerson;
 
   @OneToOne(() => NaturalPerson, (naturalPerson) => naturalPerson)
+  @JoinColumn()
   naturalPerson: NaturalPerson;
 }
