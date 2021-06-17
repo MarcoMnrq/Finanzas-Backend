@@ -1,7 +1,8 @@
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Profile } from '../../profiles/entities/profile.entity';
-import { BondTypeEnum } from '../bond-type.enum';
-
+import { PaymentMethod } from './paymentMethod.enum';
+import { Frequency } from './frequency.enum';
+import { Rate } from './rate.enum';
 @Entity('bonds')
 export class Bond {
   @PrimaryGeneratedColumn()
@@ -26,16 +27,7 @@ export class Bond {
   yearDays: number;
 
   @Column()
-  yearPeriods: number;
-
-  @Column()
-  periods: number;
-
-  @Column()
   incomeTax: number;
-
-  @Column()
-  bonus: number;
 
   @Column()
   structuring: number;
@@ -50,55 +42,22 @@ export class Bond {
   cavali: number;
 
   @Column()
-  effectiveAnnualRate: number;
+  prima: number;
 
   @Column()
-  periodEffectiveRate: number;
+  effectiveAnnualRate: number;
 
   @Column()
   discountRate: number;
 
   @Column()
-  periodRate: number;
-
-  @Column()
-  issuerInternalRateReturn: number;
-
-  @Column()
-  issuerAnnualEffectiveCostRate: number;
-
-  @Column()
-  issuerInternalRateTaxShield: number;
-
-  @Column()
-  issuerAnnualEffectiveCostRateTaxShield: number;
-
-  @Column()
-  holderInternalRateReturn: number;
-
-  @Column()
-  holderAnnualEffectiveCostRate: number;
-
-  @Column()
-  currentPrice: number;
-
-  @Column()
-  netPresentValue: number;
-
-  @Column()
-  duration: number;
-
-  @Column()
-  convexity: number;
-
-  @Column()
-  total: number;
-
-  @Column()
-  modifiedDuration: number;
-
-  @Column()
   saleDate: Date;
+
+  @Column()
+  lastPaymentDate: Date;
+
+  @Column()
+  nextPaymentDate: Date;
 
   @ManyToOne(() => Profile, (profile) => profile.sellBonds)
   issuer: Profile;
@@ -106,9 +65,15 @@ export class Bond {
   @ManyToOne(() => Profile, (profile) => profile.buyBonds)
   holder: Profile;
 
-  /*
-  @Column({ type: 'enum' })
-  bondType: BondTypeEnum;
+  @Column({type: 'enum', enum: PaymentMethod})
+  paymentMethodType: PaymentMethod;
 
-   */
+  @Column({ type: 'enum', enum: Frequency })
+  couponFrequency: Frequency;
+
+  @Column({type: 'enum', enum: Rate})
+  interestRateType: Rate;
+
+  @Column({ type: 'enum', enum: Frequency })
+  capitalization: Frequency;
 }

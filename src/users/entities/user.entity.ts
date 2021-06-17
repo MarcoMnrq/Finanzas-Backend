@@ -16,12 +16,6 @@ export class User {
   @Column()
   email: string;
 
-  @Column()
-  firstName: string;
-
-  @Column()
-  lastName: string;
-
   @Exclude()
   @Column()
   password: string;
