@@ -1,15 +1,15 @@
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
-import { Bond } from './bond.entity';
-@Entity('bondsinfo')
-export class BondInfo {
+import { BondCalculatorOutput } from './bondCalculatorOutput.entity';
+@Entity('bondcalculatorinfo')
+export class BondCalculatorInfo {
   @PrimaryGeneratedColumn()
   id: number;
   @Column()
   index: number;
   @Column()
-  bondValue: number;
-  @Column()
   date?: string;
+  @Column()
+  bond: number;
   @Column()
   coupon: number;
   @Column()
@@ -28,6 +28,6 @@ export class BondInfo {
   holderFlow: number;
   @Column()
   gracePeriod: string;
-  @ManyToOne(() => Bond, (bond) => bond.bondinfo)
-  bond: Bond;
+  @ManyToOne(() => BondCalculatorOutput, (bondOuput) => bondOuput.calculatorInfo)
+  bondOutput: BondCalculatorOutput;
 }

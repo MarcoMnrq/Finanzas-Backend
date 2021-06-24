@@ -29,25 +29,25 @@ export class CreateBondDto {
     capitalization: Frequency;
     @IsNotEmpty()
     @ApiProperty()
-    incomeTax: number;
-    @IsNotEmpty()
-    @ApiProperty()
-    flotacion: number;
-    @IsNotEmpty()
-    @ApiProperty()
-    cavali: number;
-    @IsNotEmpty()
-    @ApiProperty()
-    prima: number;
-    @IsNotEmpty()
-    @ApiProperty()
     interestRate: number;
     @IsNotEmpty()
     @ApiProperty()
     annualDiscountRate: number;
     @IsNotEmpty()
     @ApiProperty()
+    incomeTax: number;
+    @IsNotEmpty()
+    @ApiProperty()
     emmitionDate: Date;
+    @IsNotEmpty()
+    @ApiProperty()
+    prima: number;
+    @IsNotEmpty()
+    @ApiProperty()
+    flotacion: number;
+    @IsNotEmpty()
+    @ApiProperty()
+    cavali: number;
     @IsNotEmpty()
     @ApiProperty()
     colocacion: number;
