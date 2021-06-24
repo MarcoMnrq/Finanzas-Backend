@@ -1,4 +1,4 @@
 export enum Rate {
-    Nominal,
-    Efectiva,
-  }
+  Nominal,
+  Efectiva,
+}

@@ -1,6 +1,5 @@
 export enum PaymentMethod {
-    Aleman,
-    Frances,
-    Ingles,
-  }
-  
+  Aleman,
+  Frances,
+  Ingles,
+}

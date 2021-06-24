@@ -5,5 +5,6 @@ export enum Frequency {
     Trimestral,
     Cuatrimestral,
     Semestral,
-    Anual
-}
+    Anual,
+  }
+  
