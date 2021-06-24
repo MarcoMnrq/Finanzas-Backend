@@ -1,4 +1,4 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { BondCalculatorOutput } from './bondCalculatorOutput.entity';
 @Entity('bondcalculatorinfo')
 export class BondCalculatorInfo {
@@ -6,20 +6,20 @@ export class BondCalculatorInfo {
   id: number;
   @Column()
   index: number;
-  @Column()
-  date?: string;
+  @Column({nullable: true})
+  date?: string | null;
   @Column()
   bond: number;
   @Column()
   coupon: number;
-  @Column()
-  fee?: number;
+  @Column({nullable: true})
+  fee?: number | null;
   @Column()
   amortization: number;
-  @Column()
-  prima?: number;
-  @Column()
-  shield?: number;
+  @Column({nullable: true})
+  prima?: number | null;
+  @Column({nullable: true})
+  shield?: number|null;
   @Column()
   emmiterFlow: number;
   @Column()
@@ -29,5 +29,6 @@ export class BondCalculatorInfo {
   @Column()
   gracePeriod: string;
   @ManyToOne(() => BondCalculatorOutput, (bondOuput) => bondOuput.calculatorInfo)
+  @JoinColumn({ name: 'bondoutputid' })
   bondOutput: BondCalculatorOutput;
 }

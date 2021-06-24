@@ -18,15 +18,15 @@ export class BondCalculatorOutput {
   @Column()
   couponEfectiveRate: number;
   @Column()
-  couponCok: number; 
+  couponCok: number;
   @Column()
   initialEmmiterCosts: number;
   @Column()
   initialHolderCosts: number;
   @Column()
   currentPrice: number;
-  @Column()
-  accumulatedBond?: number;
+  @Column({nullable: true})
+  accumulatedBond?: number | null;
   @OneToOne(() => Bond, (bond) => bond.bondOutput)
   bond: Bond;
   @OneToMany(() => BondCalculatorInfo, (bondinfo) => bondinfo.bond)
