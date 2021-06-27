@@ -8,6 +8,7 @@ import { ProfilesModule } from './profiles/profiles.module';
 import { NaturalPersonsModule } from './natural-persons/natural-persons.module';
 import { LegalPersonsModule } from './legal-persons/legal-persons.module';
 import { BondsModule } from './bonds/bonds.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [TypeOrmModule.forRoot(), UsersModule, AuthModule, ProfilesModule, NaturalPersonsModule, LegalPersonsModule, BondsModule],
