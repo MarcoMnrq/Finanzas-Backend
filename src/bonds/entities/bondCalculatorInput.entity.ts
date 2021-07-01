@@ -4,13 +4,13 @@ import { Rate } from './rate.enum';
 import { GracePeriod } from './gracePeriod.enum';
 import { Bond } from './bond.entity';
 import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
-@Entity('bondcalculatorinput')
-export class BondCalculatorInput {
+@Entity()
+export class BondInput {
   @PrimaryGeneratedColumn()
   id: number;
-  @Column()
+  @Column("decimal", { precision: 20, scale: 6 })
   nominalValue: number;
-  @Column()
+  @Column("decimal", { precision: 20, scale: 6 })
   commercialValue: number;
   @Column()
   years: number;
@@ -22,23 +22,23 @@ export class BondCalculatorInput {
   interestRateType: Rate;
   @Column({ type: 'enum', enum: Frequency })
   capitalization: Frequency;
-  @Column()
+  @Column("decimal", { precision: 20, scale: 6 })
   interestRate: number;
-  @Column()
+  @Column("decimal", { precision: 20, scale: 6 })
   annualDiscountRate: number;
-  @Column()
+  @Column("decimal", { precision: 20, scale: 6 })
   incomeTax: number;
   @Column()
   emmitionDate: Date;
-  @Column()
+  @Column("decimal", { precision: 20, scale: 6 })
   prima: number;
-  @Column()
+  @Column("decimal", { precision: 20, scale: 6 })
   flotacion: number;
-  @Column()
+  @Column("decimal", { precision: 20, scale: 6 })
   cavali: number;
-  @Column()
+  @Column("decimal", { precision: 20, scale: 6 })
   colocacion: number;
-  @Column()
+  @Column("decimal", { precision: 20, scale: 6 })
   estructuracion: number;
   @Column({ type: 'enum', enum: PaymentMethod })
   paymentMethod: PaymentMethod;

@@ -1,57 +1,95 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { FindManyOptions, Repository } from 'typeorm';
 import { CreateBondDto } from './dto/create-bond.dto';
 import { UpdateBondDto } from './dto/update-bond.dto';
 import { Bond } from './entities/bond.entity';
 import { plainToClass } from 'class-transformer';
-import { calculateData } from './functions/calculatorFunctions';
-import { BondCalculatorInput } from './entities/bondCalculatorInput.entity';
-import { BondCalculatorInfo } from './entities/bondCalculatorInfo.entity';
-import { BondCalculatorOutput } from './entities/bondCalculatorOutput.entity';
+import { calculateData, getduracionmod, getSiguienteFechaPago, gettir, getUltimaFechaPago } from './functions/calculatorFunctions';
+import { BondInput } from './entities/bondCalculatorInput.entity';
+import { BondInfo } from './entities/bondCalculatorInfo.entity';
+import { BondOutput } from './entities/bondCalculatorOutput.entity';
+import { CreatePublicationBondDto } from './dto/create-publication.dto';
+import { BondPublication } from './entities/bondPublication.entity';
+import { BondState } from './entities/bond-state.enum';
+import { SellPublicationBondDto } from './dto/sell-publication.dto';
+import { ProfilesService } from 'src/profiles/profiles.service';
 
 @Injectable()
 export class BondsService {
   constructor(
     @InjectRepository(Bond) private readonly bondRepository: Repository<Bond>,
-    @InjectRepository(BondCalculatorInfo) private readonly bondinfoRepository: Repository<BondCalculatorInfo>,
-    @InjectRepository(BondCalculatorInput) private readonly bondinputRepository: Repository<BondCalculatorInput>,
-    @InjectRepository(BondCalculatorOutput) private readonly bondoutputRepository: Repository<BondCalculatorOutput>
+    @InjectRepository(BondInfo) private readonly bondinfoRepository: Repository<BondInfo>,
+    @InjectRepository(BondInput) private readonly bondinputRepository: Repository<BondInput>,
+    @InjectRepository(BondOutput) private readonly bondoutputRepository: Repository<BondOutput>,
+    @InjectRepository(BondPublication) private readonly bondPublicationRepository: Repository<BondPublication>,
+    private profilesService: ProfilesService
     ){}
-  async create(createBondDto: CreateBondDto) {
-    var bondinput = plainToClass(BondCalculatorInput ,createBondDto);
+  async create(publication: CreatePublicationBondDto) {
+    var bono = await this.saveBond(publication.bond);
+    //ahora guardamos la publicación
+
+    var aux = new Date();//Fecha de hoy
+    var bondOutput = calculateData(plainToClass(BondInput, publication.bond));
+    var tir = gettir(bondOutput);
+    var duracion = getduracionmod(bondOutput);
+    var ultimoPago = getUltimaFechaPago(bondOutput);
+    var siguientePago = getSiguienteFechaPago(bondOutput);
+    //Buscamos el profile del vendedor:
+    var issuer = await this.profilesService.findOne(publication.issuerId);
+    var publicationaux = {
+      bond: bono,
+      expectedRate: 15.0,
+      description: publication.description,
+      issuerProfile: issuer,
+      holderProfile: null,
+      state: BondState.Publicado,
+      lastPaymentDate: ultimoPago,
+      nextPaymentDate: ultimoPago,
+      name: publication.name,
+      saleDate: aux,
+      tir: tir,
+      duracionmod: duracion
+    } as BondPublication;
+    return await this.bondPublicationRepository.save(publicationaux);
+  }
+  async sell(publication: SellPublicationBondDto, id: number){
+    var publicationx = await this.bondPublicationRepository.findOne(id=id);
+    publicationx.holderProfile = await this.profilesService.findOne(publication.sellerId);
+    return await this.bondPublicationRepository.save(publicationx);
+  }
+  async saveBond(createBondDto: CreateBondDto){
+    var bondinput = plainToClass(BondInput, createBondDto);
     var bondcalculatoroutput = calculateData(bondinput);
     var savedinput = await this.bondinputRepository.save(bondinput);
     var savedoutput = await this.bondoutputRepository.save(bondcalculatoroutput);
-    //guardamos las partes del bono:
-    // for (let i = 0; i < bondcalculatoroutput.calculatorInfo.length; i++) {
-    //   bondcalculatoroutput.calculatorInfo[i].bondOutput=savedoutput;
-    //   await this.bondinfoRepository.save(bondcalculatoroutput.calculatorInfo[i]);
-    // }
-    //establecemos la relacion entre el input/output y el bono:
     var bonoaux = {
       bondInput: savedinput,
       bondOutput: savedoutput
     }as Bond;
     return await this.bondRepository.save(bonoaux);
   }
-
   async findAll() {
-    return await this.bondRepository.find();
-    //return await this.bondRepository.find({relations: ["bondcalculatoroutput","bondcalculatorinput"]});
+    return await this.bondRepository.find({relations: ["bondInput", "bondOutput"]});
   }
-
+  async findByHolderId(holderId: number){
+    return await this.bondPublicationRepository.find({where: {holderProfileId: holderId}});
+  }
+  async findBySellerId(sellerId: number){
+    return await this.bondPublicationRepository.find({where: {sellerId: sellerId}});
+  }
   async findOne(id: number) {
-    return await this.bondRepository.findOne(id=id);
-  }
-
-  async update(id: number, updateBondDto: UpdateBondDto) {
-    //TODO: aqui re-calculariamos todos los datos del bono
-    //TODOreturn await this.bondRepository.update(id=id, updateBondDto);
+    return await this.bondRepository.findOne(id=id,{relations: ["bondInput", "bondOutput"]});
   }
 
   async remove(id: number) {
-    return await this.bondRepository.delete(id=id);
+    console.log(id);
+    var bono = await this.bondRepository.findOne(id=id,{relations:["bondInput", "bondOutput"]   });
+    console.log(bono);
+    await this.bondRepository.remove(bono);
+    await this.bondinputRepository.remove(bono.bondInput);
+    await this.bondoutputRepository.remove(bono.bondOutput);
+    return;
   }
 }
 

@@ -1,34 +1,34 @@
 import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
-import { BondCalculatorOutput } from './bondCalculatorOutput.entity';
-@Entity('bondcalculatorinfo')
-export class BondCalculatorInfo {
+import { BondOutput } from './bondCalculatorOutput.entity';
+@Entity()
+export class BondInfo {
   @PrimaryGeneratedColumn()
   id: number;
   @Column()
   index: number;
   @Column({nullable: true})
   date?: string | null;
-  @Column()
+  @Column("decimal", { precision: 20, scale: 6 })
   bond: number;
-  @Column()
+  @Column("decimal", { precision: 20, scale: 6 })
   coupon: number;
-  @Column({nullable: true})
+  @Column("decimal", {precision: 20, scale: 6, nullable: true})
   fee?: number | null;
-  @Column()
+  @Column("decimal", { precision: 20, scale: 6 })
   amortization: number;
-  @Column({nullable: true})
+  @Column("decimal", {precision: 20, scale: 6, nullable: true})
   prima?: number | null;
-  @Column({nullable: true})
+  @Column("decimal", {precision: 20, scale: 6, nullable: true})
   shield?: number|null;
-  @Column()
+  @Column("decimal", { precision: 20, scale: 6 })
   emmiterFlow: number;
-  @Column()
+  @Column("decimal", { precision: 20, scale: 6 })
   emmiterShieldFlow: number;
-  @Column()
+  @Column("decimal", { precision: 20, scale: 6 })
   holderFlow: number;
   @Column()
   gracePeriod: string;
-  @ManyToOne(() => BondCalculatorOutput, (bondOuput) => bondOuput.calculatorInfo)
-  @JoinColumn({ name: 'bondoutputid' })
-  bondOutput: BondCalculatorOutput;
+  @ManyToOne(() => BondOutput, (bondOuput) => bondOuput.calculatorInfo)
+  @JoinColumn()
+  bondOutput: BondOutput;
 }

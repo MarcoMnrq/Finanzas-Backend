@@ -2,7 +2,7 @@ import { Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn } from 
 import { User } from '../../users/entities/user.entity';
 import { LegalPerson } from '../../legal-persons/entities/legal-person.entity';
 import { NaturalPerson } from '../../natural-persons/entities/natural-person.entity';
-import { Bond } from '../../bonds/entities/bond.entity';
+import { BondPublication } from "../../bonds/entities/bondPublication.entity";
 
 @Entity('profiles')
 export class Profile {
@@ -12,11 +12,11 @@ export class Profile {
   @OneToOne(() => User, (user) => user.profile)
   user: User;
 
-  @OneToMany(() => Bond, (bond) => bond.issuer)
-  sellBonds: Bond[];
+  @OneToMany(() => BondPublication, (publication) => publication.issuerProfile)
+  sellBonds: BondPublication[];
 
-  @OneToMany(() => Bond, (bond) => bond.holder)
-  buyBonds: Bond[];
+  @OneToMany(() => BondPublication, (publication) => publication.holderProfile)
+  buyBonds: BondPublication[];
 
   @OneToOne(() => LegalPerson, (legalPerson) => legalPerson.profile)
   @JoinColumn()

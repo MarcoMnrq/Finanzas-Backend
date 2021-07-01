@@ -1,14 +1,75 @@
 import { npv, pmt, irr } from "financial";
-import { BondCalculatorInfo } from "../entities/bondCalculatorInfo.entity";
-import { BondCalculatorInput } from "../entities/bondCalculatorInput.entity";
-import { BondCalculatorOutput } from "../entities/bondCalculatorOutput.entity";
+import { BondInfo } from "../entities/bondCalculatorInfo.entity";
+import { BondInput } from "../entities/bondCalculatorInput.entity";
+import { BondOutput } from "../entities/bondCalculatorOutput.entity";
 import { Frequency } from "../entities/frequency.enum";
 import { GracePeriod } from "../entities/gracePeriod.enum";
 import { PaymentMethod } from "../entities/paymentMethod.enum";
 import { Rate } from "../entities/rate.enum";
 
-export function calculateData(data: BondCalculatorInput): BondCalculatorOutput {
-  let output = {} as BondCalculatorOutput;
+export function gettir(aux: BondOutput){
+  //Aqui sacamos el emmiter flow
+  var emmiterflowaux = [];
+  aux.calculatorInfo.forEach(el => {
+    emmiterflowaux.push(el.emmiterFlow);
+  })
+  return irr(emmiterflowaux);
+}
+function gettiraux(bondCalculatorInfo){
+  var emmiterflowaux = [];
+  bondCalculatorInfo.forEach(el => {
+    emmiterflowaux.push(el.emmiterFlow);
+  })
+  return irr(emmiterflowaux);
+}
+export function getUltimaFechaPago(aux: BondOutput){
+  //Ahora tenemos que iterar sobre los infos para ver donde cuadra la fecha actual
+  var fechaact = new Date();
+  var ultimoPago = new Date();
+  for (let i = 0; i < aux.calculatorInfo.length; i++) {
+    if(aux.calculatorInfo[i].date){
+      var auxdate = parseDMY(aux.calculatorInfo[i].date);
+      if(fechaact > auxdate){
+        ultimoPago = auxdate;
+      }
+    }
+  }
+  return ultimoPago;
+}
+export function getSiguienteFechaPago(aux: BondOutput){
+  //Ahora tenemos que iterar sobre los infos para ver donde cuadra la fecha actual
+  var fechaact = new Date();
+  var ultimoPago = new Date();
+  var posicion = 0;
+  for (let i = 0; i < aux.calculatorInfo.length; i++) {
+    if(aux.calculatorInfo[i].date){
+      var auxdate = parseDMY(aux.calculatorInfo[i].date);
+      if(fechaact > auxdate){
+        ultimoPago = auxdate;
+        posicion = i;
+      }
+    }
+  }
+  if(posicion+1>aux.calculatorInfo.length){
+    return null;
+  }
+  return parseDMY(aux.calculatorInfo[posicion+1].date);
+}
+function parseDMY(s) {
+  var b = s.split(/\D+/);
+  return new Date(b[2], b[1]-1, b[0]);
+}
+export function getduracionmod(BondInput){
+  var aux = calculateData(BondInput);
+  var duracion = 0.0;
+  for (let i = 0; i < aux.calculatorInfo.length; i++) {
+    duracion += ((i*aux.calculatorInfo[i].coupon)/aux.currentPrice)/(1+gettiraux(aux.calculatorInfo)/aux.totalPeriods);
+  }
+  return duracion;
+}
+
+export function calculateData(data: BondInput): BondOutput {
+  let output = {} as BondOutput;
   console.log(data);
 
   const couponFrequency = frequencyToDay(data.couponFrequency);
@@ -101,10 +162,10 @@ function frequencyToDay(frequency: Frequency): number {
 }
 
 function germanMethod(
-  inputData: BondCalculatorInput,
-  outputData: BondCalculatorOutput
-): BondCalculatorInfo[] {
-  let info: BondCalculatorInfo[] = [];
+  inputData: BondInput,
+  outputData: BondOutput
+): BondInfo[] {
+  let info: BondInfo[] = [];
   const initialValues = {
     index: 0,
     emmiterFlow: inputData.commercialValue - outputData.initialEmmiterCosts,
@@ -115,7 +176,7 @@ function germanMethod(
     coupon: 0,
     amortization: 0,
     gracePeriod: "",
-  } as BondCalculatorInfo;
+  } as BondInfo;
 
   const couponFrequency = frequencyToDay(inputData.couponFrequency);
   info.push(initialValues);
@@ -173,16 +234,16 @@ function germanMethod(
       emmiterShieldFlow: parseFloat(emmiterShieldFlow.toFixed(2)),
       holderFlow: parseFloat(holderFlow.toFixed(2)),
       gracePeriod: GracePeriod[gracePeriod],
-    } as BondCalculatorInfo);
+    } as BondInfo);
   }
   return info;
 }
 
 function frenchMethod(
-  inputData: BondCalculatorInput,
-  outputData: BondCalculatorOutput
+  inputData: BondInput,
+  outputData: BondOutput
 ) {
-  let info: BondCalculatorInfo[] = [];
+  let info: BondInfo[] = [];
   const initialValues = {
     index: 0,
     emmiterFlow: inputData.commercialValue - outputData.initialEmmiterCosts,
@@ -193,7 +254,7 @@ function frenchMethod(
     coupon: 0,
     amortization: 0,
     gracePeriod: "",
-  } as BondCalculatorInfo;
+  } as BondInfo;
 
   const couponFrequency = frequencyToDay(inputData.couponFrequency);
   info.push(initialValues);
@@ -255,16 +316,16 @@ function frenchMethod(
       emmiterShieldFlow: parseFloat(emmiterShieldFlow.toFixed(2)),
       holderFlow: parseFloat(holderFlow.toFixed(2)),
       gracePeriod: GracePeriod[gracePeriod],
-    } as BondCalculatorInfo);
+    } as BondInfo);
   }
   return info;
 }
 
 function englishMethod(
-  inputData: BondCalculatorInput,
-  outputData: BondCalculatorOutput
+  inputData: BondInput,
+  outputData: BondOutput
 ) {
-  let info: BondCalculatorInfo[] = [];
+  let info: BondInfo[] = [];
   const initialValues = {
     index: 0,
     emmiterFlow: inputData.commercialValue - outputData.initialEmmiterCosts,
@@ -275,7 +336,7 @@ function englishMethod(
     coupon: 0,
     amortization: 0,
     gracePeriod: "",
-  } as BondCalculatorInfo;
+  } as BondInfo;
 
   const couponFrequency = frequencyToDay(inputData.couponFrequency);
   info.push(initialValues);
@@ -333,7 +394,7 @@ function englishMethod(
       emmiterShieldFlow: parseFloat(emmiterShieldFlow.toFixed(2)),
       holderFlow: parseFloat(holderFlow.toFixed(2)),
       gracePeriod: GracePeriod[gracePeriod],
-    } as BondCalculatorInfo);
+    } as BondInfo);
   }
   return info;
 }

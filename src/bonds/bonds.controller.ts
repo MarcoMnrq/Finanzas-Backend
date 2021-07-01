@@ -32,11 +32,6 @@ export class BondsController {
     return this.bondsService.findOne(+id);
   }
   
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateBondDto: UpdateBondDto) {
-    return this.bondsService.update(+id, updateBondDto);
-  }
-  
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.bondsService.remove(+id);
