@@ -8,10 +8,11 @@ import { BondInput } from './entities/bondCalculatorInput.entity';
 import { BondOutput } from './entities/bondCalculatorOutput.entity';
 import { BondPublication } from './entities/bondPublication.entity';
 import { ProfilesService } from 'src/profiles/profiles.service';
+import { ProfilesModule } from 'src/profiles/profiles.module';
 
 @Module({
   controllers: [BondsController],
-  providers: [BondsService, ProfilesService],
-  imports: [TypeOrmModule.forFeature([Bond,BondInfo,BondInput,BondOutput,BondPublication])],
+  providers: [BondsService],
+  imports: [TypeOrmModule.forFeature([Bond,BondInfo,BondInput,BondOutput,BondPublication]),ProfilesModule],
 })
 export class BondsModule {}

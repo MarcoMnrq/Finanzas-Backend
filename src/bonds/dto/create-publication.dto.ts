@@ -14,4 +14,7 @@ export class CreatePublicationBondDto {
     @IsNotEmpty()
     @ApiProperty()
     description: string;
+    @IsNotEmpty()
+    @ApiProperty()
+    expectedRate: number;
 }

@@ -19,6 +19,10 @@ export class LegalPerson {
   @Column()
   registerYear: number;
 
+  @Column()
+  emitterRating: string;
+
   @OneToOne(() => Profile, (profile) => profile.legalPerson)
   profile: Profile;
+
 }

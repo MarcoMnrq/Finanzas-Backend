@@ -3,7 +3,7 @@ import { Bond } from '../../bonds/entities/bond.entity';
 import { Column, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Profile } from "src/profiles/entities/profile.entity";
 import { ApiProperty } from "@nestjs/swagger";
-export class BondPublication {
+export class BondPublicationDto {
     @ApiProperty()
     id: number;
     @ApiProperty()

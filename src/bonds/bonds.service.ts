@@ -28,7 +28,6 @@ export class BondsService {
   async create(publication: CreatePublicationBondDto) {
     var bono = await this.saveBond(publication.bond);
     //ahora guardamos la publicación
-
     var aux = new Date();//Fecha de hoy
     var bondOutput = calculateData(plainToClass(BondInput, publication.bond));
     var tir = gettir(bondOutput);
@@ -39,13 +38,13 @@ export class BondsService {
     var issuer = await this.profilesService.findOne(publication.issuerId);
     var publicationaux = {
       bond: bono,
-      expectedRate: 15.0,
+      expectedRate: publication.expectedRate,
       description: publication.description,
       issuerProfile: issuer,
       holderProfile: null,
       state: BondState.Publicado,
       lastPaymentDate: ultimoPago,
-      nextPaymentDate: ultimoPago,
+      nextPaymentDate: siguientePago,
       name: publication.name,
       saleDate: aux,
       tir: tir,

@@ -18,11 +18,11 @@ export class Profile {
   @OneToMany(() => BondPublication, (publication) => publication.holderProfile)
   buyBonds: BondPublication[];
 
-  @OneToOne(() => LegalPerson, (legalPerson) => legalPerson.profile)
+  @OneToOne(() => LegalPerson, (legalPerson) => legalPerson.profile, {nullable: true})
   @JoinColumn()
-  legalPerson: LegalPerson;
+  legalPerson: LegalPerson|null;
 
-  @OneToOne(() => NaturalPerson, (naturalPerson) => naturalPerson)
+  @OneToOne(() => NaturalPerson, (naturalPerson) => naturalPerson, {nullable: true})
   @JoinColumn()
-  naturalPerson: NaturalPerson;
+  naturalPerson: NaturalPerson| null;
 }
