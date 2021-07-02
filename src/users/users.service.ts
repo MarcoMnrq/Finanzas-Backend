@@ -5,26 +5,55 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 import { Repository } from 'typeorm';
 import { LoginUserDto } from './dto/login-user.dto';
+import { ProfilesService } from 'src/profiles/profiles.service';
+import { Role } from 'src/profiles/entities/role.enum';
+import { EntityType } from 'src/legal-persons/entities/entity.enum';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User) private readonly usersRepository: Repository<User>,
+    private profilesService: ProfilesService
   ) {}
 
   async create(createUserDto: CreateUserDto) {
-    const user = this.usersRepository.create({
-      ...createUserDto,
+    if( typeof createUserDto.legalPerson === 'undefined' && typeof createUserDto.naturalPerson === 'undefined'){
+      return;
+    }
+    var user = await this.usersRepository.save({
+      email: createUserDto.email,
+      password: createUserDto.password,
       profile: null,
     });
+    if(typeof createUserDto.legalPerson !== 'undefined'){
+      user.profile = await this.profilesService.createLegalProfile(createUserDto.legalPerson,user);
+    }
+    else{
+      user.profile = await this.profilesService.createNaturalProfile(createUserDto.naturalPerson,user);
+    }
     return await this.usersRepository.save(user);
   }
   async login(loginUserDto: LoginUserDto) {
-    var aux = await this.usersRepository.findOne({where: {email: loginUserDto.email, password: loginUserDto.password}, relations: ["profile"]});
+    var aux = await this.usersRepository.findOne({where: {email: loginUserDto.email, password: loginUserDto.password}, relations: ["profile","profile.legalPerson","profile.naturalPerson"]});
     if(!aux){
       throw new NotFoundException(`Usuario #${loginUserDto.email} no encontrado`);
     }
-    return aux;
+    var temp = {
+      ...aux,
+      role: null
+    };
+    if(aux.profile.legalPerson===null){
+      temp.role = Role.NaturalPerson;
+    }
+    else{
+      if(aux.profile.legalPerson.entity===EntityType.Empresa){
+        temp.role = Role.Bussinness;
+      }
+      else{
+        temp.role = Role.Institution;
+      }
+    }
+    return temp;
   }
   findAll() {
     return this.usersRepository.find();

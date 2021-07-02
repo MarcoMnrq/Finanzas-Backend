@@ -17,10 +17,10 @@ import { ApiTags } from '@nestjs/swagger';
 export class ProfilesController {
   constructor(private readonly profilesService: ProfilesService) {}
 
-  @Post()
-  create(@Body() createProfileDto: CreateProfileDto) {
-    return this.profilesService.create(createProfileDto);
-  }
+  // @Post()
+  // create(@Body() createProfileDto: CreateProfileDto) {
+  //   return this.profilesService.create(createProfileDto);
+  // }
 
   @Get()
   findAll() {

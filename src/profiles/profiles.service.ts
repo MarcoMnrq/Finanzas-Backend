@@ -7,45 +7,66 @@ import { Repository } from 'typeorm';
 import { CreateProfileDto } from './dto/create-profile.dto';
 import { UpdateProfileDto } from './dto/update-profile.dto';
 import { Profile } from './entities/profile.entity';
+import { User } from 'src/users/entities/user.entity';
+import { CreateLegalPersonDto } from 'src/legal-persons/dto/create-legal-person.dto';
+import { CreateNaturalPersonDto } from 'src/natural-persons/dto/create-natural-person.dto';
 
 @Injectable()
 export class ProfilesService {
   constructor(
     @InjectRepository(Profile) private readonly profileRepository: Repository<Profile>,
     private legalPersonsService: LegalPersonsService,
-    private naturalPersonsService: NaturalPersonsService,
-    private usersService: UsersService
+    private naturalPersonsService: NaturalPersonsService
     ){}
-  async create(createProfileDto: CreateProfileDto) {
-    if( typeof createProfileDto.legalPerson === 'undefined' && typeof createProfileDto.naturalPerson === 'undefined'){
-      return;
-    }
-    var user = await this.usersService.findOne(createProfileDto.userId);
+  // async create(createProfileDto: CreateProfileDto) {
+  //   if( typeof createProfileDto.legalPerson === 'undefined' && typeof createProfileDto.naturalPerson === 'undefined'){
+  //     return;
+  //   }
+  //   var user = await this.usersService.findOne(createProfileDto.userId);
+  //   var profile = await this.profileRepository.create({
+  //     user: user,
+  //     legalPerson: null,
+  //     naturalPerson: null
+  //   });
+  //   console.log(profile);
+  //   //Aqui creamos también el profile que se vincula,
+  //   if(typeof createProfileDto.legalPerson !== 'undefined'){
+  //     //Creamos el profile de legalPerson
+  //     profile.legalPerson = await this.legalPersonsService.create(createProfileDto.legalPerson);
+  //   }
+  //   else{
+  //     console.log(createProfileDto.naturalPerson);
+  //     profile.naturalPerson = await this.naturalPersonsService.create(createProfileDto.naturalPerson);
+  //   }
+  //   console.log(profile);
+  //   return await this.profileRepository.save(profile);
+  // }
+  async createLegalProfile(createProfileDto: CreateLegalPersonDto, user: User){
     var profile = await this.profileRepository.create({
       user: user,
       legalPerson: null,
       naturalPerson: null
     });
-    console.log(profile);
     //Aqui creamos también el profile que se vincula,
-    if(typeof createProfileDto.legalPerson !== 'undefined'){
-      //Creamos el profile de legalPerson
-      profile.legalPerson = await this.legalPersonsService.create(createProfileDto.legalPerson);
-    }
-    else{
-      console.log(createProfileDto.naturalPerson);
-      profile.naturalPerson = await this.naturalPersonsService.create(createProfileDto.naturalPerson);
-    }
-    console.log(profile);
+    profile.legalPerson = await this.legalPersonsService.create(createProfileDto);
     return await this.profileRepository.save(profile);
   }
-
+  async createNaturalProfile(createProfileDto: CreateNaturalPersonDto, user: User){
+    var profile = await this.profileRepository.create({
+      user: user,
+      legalPerson: null,
+      naturalPerson: null
+    });
+    //Aqui creamos también el profile que se vincula,
+    profile.naturalPerson = await this.naturalPersonsService.create(createProfileDto);
+    return await this.profileRepository.save(profile);
+  }
   async findAll() {
     return await this.profileRepository.find({relations:["user"]});
   }
 
   async findOne(id: number) {
-    return await this.profileRepository.findOne(id=id,{relations:["user"]});
+    return await this.profileRepository.findOne(id=id,{relations:["user","naturalPerson","legalPerson"]});
   }
 
   async remove(id: number) {

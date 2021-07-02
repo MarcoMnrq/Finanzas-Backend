@@ -10,7 +10,7 @@ import { UsersModule } from '../users/users.module';
 @Module({
   controllers: [ProfilesController],
   providers: [ProfilesService],
-  imports: [TypeOrmModule.forFeature([Profile]),LegalPersonsModule,NaturalPersonsModule, UsersModule],
+  imports: [TypeOrmModule.forFeature([Profile]),LegalPersonsModule,NaturalPersonsModule],
   exports: [ProfilesService]
 })
 export class ProfilesModule {

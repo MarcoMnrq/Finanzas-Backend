@@ -73,24 +73,24 @@ export class BondsService {
     return await this.bondRepository.save(bonoaux);
   }
   async findAllSelling(){
-    return await this.bondPublicationRepository.find({where: {state: BondState.Publicado}, relations: ["bond", "issuerProfile"]});
+    return await this.bondPublicationRepository.find({where: {state: BondState.Publicado}, relations: ["bond","bond.bondInput","bond.bondOutput","issuerProfile","holderProfile","issuerProfile.legalPerson"]});
   }
   async findAllSold(){
-    return await this.bondPublicationRepository.find({where: {state: BondState.Vendido}, relations: ["bond", "issuerProfile","holderProfile"]});
+    return await this.bondPublicationRepository.find({where: {state: BondState.Vendido}, relations: ["bond","bond.bondInput","bond.bondOutput","issuerProfile","holderProfile","issuerProfile.legalPerson","holderProfile.naturalPerson"]});
   }
   async findAll() {
     return await this.bondRepository.find({relations: ["bondInput", "bondOutput"]});
   }
   async findByHolderId(holderId: number){
-    return await this.bondPublicationRepository.find({where: {holderProfile:{id:holderId}}, relations: ["bond","issuerProfile","holderProfile"]});
+    return await this.bondPublicationRepository.find({where: {holderProfile:{id:holderId}}, relations: ["bond","bond.bondInput","bond.bondOutput","issuerProfile","holderProfile","issuerProfile.legalPerson","holderProfile.naturalPerson"]});
   }
   async findBySellerId(sellerId: number){
-    return await this.bondPublicationRepository.find({where: {issuerProfile: {id: sellerId}}, relations: ["bond", "issuerProfile"]});
+    return  await this.bondPublicationRepository.find({where: {issuerProfile: {id: sellerId}}, relations: ["bond","bond.bondInput","bond.bondOutput","issuerProfile","holderProfile","issuerProfile.legalPerson","holderProfile.naturalPerson"]});
   }
   async findOne(id: number) {
-    return await this.bondRepository.findOne(id=id,{relations: ["bondInput", "bondOutput"]});
+    return await this.bondPublicationRepository.findOne(id=id,{relations: ["bond","bond.bondInput","bond.bondOutput","issuerProfile","holderProfile","issuerProfile.legalPerson","holderProfile.naturalPerson"]})
+    //return await this.bondRepository.findOne(id=id,{relations: ["bondInput", "bondOutput"]});
   }
-
   async remove(id: number) {
     console.log(id);
     var bono = await this.bondRepository.findOne(id=id,{relations:["bondInput", "bondOutput"]   });
