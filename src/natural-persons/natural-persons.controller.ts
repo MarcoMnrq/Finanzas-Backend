@@ -12,36 +12,36 @@ import { CreateNaturalPersonDto } from './dto/create-natural-person.dto';
 import { UpdateNaturalPersonDto } from './dto/update-natural-person.dto';
 import { ApiTags } from '@nestjs/swagger';
 
-@ApiTags('Natural Person')
-@Controller('natural-persons')
-export class NaturalPersonsController {
-  constructor(private readonly naturalPersonsService: NaturalPersonsService) {}
+// @ApiTags('Natural Person')
+// @Controller('natural-persons')
+// export class NaturalPersonsController {
+//   constructor(private readonly naturalPersonsService: NaturalPersonsService) {}
 
-  @Post()
-  create(@Body() createNaturalPersonDto: CreateNaturalPersonDto) {
-    return this.naturalPersonsService.create(createNaturalPersonDto);
-  }
+//   @Post()
+//   create(@Body() createNaturalPersonDto: CreateNaturalPersonDto) {
+//     return this.naturalPersonsService.create(createNaturalPersonDto);
+//   }
 
-  @Get()
-  findAll() {
-    return this.naturalPersonsService.findAll();
-  }
+//   @Get()
+//   findAll() {
+//     return this.naturalPersonsService.findAll();
+//   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.naturalPersonsService.findOne(+id);
-  }
+//   @Get(':id')
+//   findOne(@Param('id') id: string) {
+//     return this.naturalPersonsService.findOne(+id);
+//   }
 
-  @Patch(':id')
-  update(
-    @Param('id') id: string,
-    @Body() updateNaturalPersonDto: UpdateNaturalPersonDto,
-  ) {
-    return this.naturalPersonsService.update(+id, updateNaturalPersonDto);
-  }
+//   @Patch(':id')
+//   update(
+//     @Param('id') id: string,
+//     @Body() updateNaturalPersonDto: UpdateNaturalPersonDto,
+//   ) {
+//     return this.naturalPersonsService.update(+id, updateNaturalPersonDto);
+//   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.naturalPersonsService.remove(+id);
-  }
-}
+//   @Delete(':id')
+//   remove(@Param('id') id: string) {
+//     return this.naturalPersonsService.remove(+id);
+//   }
+// }

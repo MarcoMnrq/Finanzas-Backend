@@ -26,9 +26,9 @@ export class BondsService {
     private profilesService: ProfilesService
     ){}
   async create(publication: CreatePublicationBondDto) {
-    var bono = await this.saveBond(publication.bond);
+    var bono = await this.saveBond(publication.bond.bondInput);
     //ahora guardamos la publicación
-    var bondOutput = calculateData(plainToClass(BondInput, publication.bond));
+    var bondOutput = calculateData(plainToClass(BondInput, publication.bond.bondInput));
     var aux = new Date();//Fecha de hoy
     var tir = gettir(bondOutput);
     if(Number.isNaN(tir)){
@@ -58,6 +58,7 @@ export class BondsService {
   async sell(publication: SellPublicationBondDto, id: number){
     var publicationx = await this.bondPublicationRepository.findOne(id=id);
     publicationx.holderProfile = await this.profilesService.findOne(publication.sellerId);
+    publicationx.state = BondState.Vendido;
     return await this.bondPublicationRepository.save(publicationx);
   }
   async saveBond(createBondDto: CreateBondDto){

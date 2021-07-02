@@ -1,10 +1,17 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { IsNotEmpty } from "class-validator";
 import { CreateBondDto } from "./create-bond.dto";
+
+export class BondDto{
+    @IsNotEmpty()
+    @ApiProperty()
+    bondInput: CreateBondDto;
+}
+
 export class CreatePublicationBondDto {
     @IsNotEmpty()
     @ApiProperty()
-    bond: CreateBondDto;
+    bond: BondDto;
     @IsNotEmpty()
     @ApiProperty()
     issuerId: number;
