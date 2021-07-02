@@ -4,6 +4,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 import { Repository } from 'typeorm';
+import { LoginUserDto } from './dto/login-user.dto';
 
 @Injectable()
 export class UsersService {
@@ -18,7 +19,13 @@ export class UsersService {
     });
     return await this.usersRepository.save(user);
   }
-
+  async login(loginUserDto: LoginUserDto) {
+    var aux = await this.usersRepository.findOne({where: {email: loginUserDto.email, password: loginUserDto.password}, relations: ["profile"]});
+    if(!aux){
+      throw new NotFoundException(`Usuario #${loginUserDto.email} no encontrado`);
+    }
+    return aux;
+  }
   findAll() {
     return this.usersRepository.find();
   }
@@ -31,9 +38,9 @@ export class UsersService {
     return user;
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
-  }
+  // update(id: number, updateUserDto: UpdateUserDto) {
+  //   return `This action updates a #${id} user`;
+  // }
 
   async remove(id: number) {
     const user = await this.findOne(id);

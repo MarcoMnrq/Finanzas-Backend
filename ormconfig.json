@@ -1,10 +1,16 @@
 {
   "type": "postgres",
-  "host": "localhost",
+  "host": "ec2-54-197-100-79.compute-1.amazonaws.com",
   "port": 5432,
-  "username": "postgres",
-  "password": "Admin123#",
-  "database": "bonds",
+  "username": "wydjnslltxbbom",
+  "password": "fddbdb0536b396c667cc7db0d90077723724f69342686e30f23d489e16bfd880",
+  "database": "db6m7k9r9m4tlo",
   "entities": ["dist/**/*.entity{.ts,.js}"],
-  "synchronize": true
+  "synchronize": true,
+  "ssl": true,
+  "extra": {
+    "ssl": {
+      "rejectUnauthorized": false
+    }
+  }
 }

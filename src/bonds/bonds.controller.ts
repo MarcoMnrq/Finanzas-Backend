@@ -31,7 +31,22 @@ export class BondsController {
   findAll() {
     return this.bondsService.findAll();
   }
-  
+  @Get('holder/:id')
+  findByHolderId(@Param('id') id: number){
+    return this.bondsService.findByHolderId(id);
+  }
+  @Get('seller/:id')
+  findBySellerId(@Param('id') id: number){
+    return this.bondsService.findBySellerId(id);
+  }
+  @Get('selling')
+  findBySelling(){
+    return this.bondsService.findAllSelling();
+  }
+  @Get('sold')
+  findBySold(){
+    return this.bondsService.findAllSold();
+  }
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.bondsService.findOne(+id);

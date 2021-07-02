@@ -57,7 +57,7 @@ export class BondsService {
   }
   async sell(publication: SellPublicationBondDto, id: number){
     var publicationx = await this.bondPublicationRepository.findOne(id=id);
-    publicationx.holderProfile = await this.profilesService.findOne(publication.sellerId);
+    publicationx.holderProfile = await this.profilesService.findOne(publication.buyerId);
     publicationx.state = BondState.Vendido;
     return await this.bondPublicationRepository.save(publicationx);
   }
@@ -72,14 +72,20 @@ export class BondsService {
     }as Bond;
     return await this.bondRepository.save(bonoaux);
   }
+  async findAllSelling(){
+    return await this.bondPublicationRepository.find({where: {state: BondState.Publicado}, relations: ["bond", "issuerProfile"]});
+  }
+  async findAllSold(){
+    return await this.bondPublicationRepository.find({where: {state: BondState.Vendido}, relations: ["bond", "issuerProfile","holderProfile"]});
+  }
   async findAll() {
     return await this.bondRepository.find({relations: ["bondInput", "bondOutput"]});
   }
   async findByHolderId(holderId: number){
-    return await this.bondPublicationRepository.find({where: {holderProfileId: holderId}});
+    return await this.bondPublicationRepository.find({where: {holderProfile:{id:holderId}}, relations: ["bond","issuerProfile","holderProfile"]});
   }
   async findBySellerId(sellerId: number){
-    return await this.bondPublicationRepository.find({where: {sellerId: sellerId}});
+    return await this.bondPublicationRepository.find({where: {issuerProfile: {id: sellerId}}, relations: ["bond", "issuerProfile"]});
   }
   async findOne(id: number) {
     return await this.bondRepository.findOne(id=id,{relations: ["bondInput", "bondOutput"]});

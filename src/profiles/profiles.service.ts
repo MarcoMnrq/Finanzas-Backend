@@ -41,15 +41,11 @@ export class ProfilesService {
   }
 
   async findAll() {
-    return await this.profileRepository.find();
+    return await this.profileRepository.find({relations:["user"]});
   }
 
   async findOne(id: number) {
-    return await this.profileRepository.findOne(id=id);
-  }
-
-  update(id: number, updateProfileDto: UpdateProfileDto) {
-    return `This action updates a #${id} profile`;
+    return await this.profileRepository.findOne(id=id,{relations:["user"]});
   }
 
   async remove(id: number) {
