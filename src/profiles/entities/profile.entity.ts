@@ -22,7 +22,7 @@ export class Profile {
   @JoinColumn()
   legalPerson: LegalPerson|null;
 
-  @OneToOne(() => NaturalPerson, (naturalPerson) => naturalPerson, {nullable: true})
+  @OneToOne(() => NaturalPerson, (naturalPerson) => naturalPerson.profile, {nullable: true})
   @JoinColumn()
   naturalPerson: NaturalPerson| null;
 }

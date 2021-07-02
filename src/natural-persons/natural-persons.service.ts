@@ -11,7 +11,8 @@ export class NaturalPersonsService {
     @InjectRepository(NaturalPerson) private readonly naturalPersonRepository: Repository<NaturalPerson>
     ){}
   async create(createNaturalPersonDto: CreateNaturalPersonDto) {
-    return await this.naturalPersonRepository.save(createNaturalPersonDto);
+    var aux = await this.naturalPersonRepository.create(createNaturalPersonDto);
+    return await this.naturalPersonRepository.save(aux);
   }
 
   async findAll() {

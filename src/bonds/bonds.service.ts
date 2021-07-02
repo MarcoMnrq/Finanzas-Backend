@@ -28,12 +28,15 @@ export class BondsService {
   async create(publication: CreatePublicationBondDto) {
     var bono = await this.saveBond(publication.bond);
     //ahora guardamos la publicación
-    var aux = new Date();//Fecha de hoy
     var bondOutput = calculateData(plainToClass(BondInput, publication.bond));
+    var aux = new Date();//Fecha de hoy
     var tir = gettir(bondOutput);
-    var duracion = getduracionmod(bondOutput);
+    if(Number.isNaN(tir)){
+      tir = 0.0;
+    }
     var ultimoPago = getUltimaFechaPago(bondOutput);
     var siguientePago = getSiguienteFechaPago(bondOutput);
+    console.log(gettir(bondOutput));
     //Buscamos el profile del vendedor:
     var issuer = await this.profilesService.findOne(publication.issuerId);
     var publicationaux = {
@@ -48,7 +51,7 @@ export class BondsService {
       name: publication.name,
       saleDate: aux,
       tir: tir,
-      duracionmod: duracion
+      duracionmod: getduracionmod(bondOutput)
     } as BondPublication;
     return await this.bondPublicationRepository.save(publicationaux);
   }

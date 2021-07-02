@@ -17,7 +17,7 @@ export class ProfilesService {
     private usersService: UsersService
     ){}
   async create(createProfileDto: CreateProfileDto) {
-    if(createProfileDto.legalPerson === null && createProfileDto.naturalPerson === null){
+    if( typeof createProfileDto.legalPerson === 'undefined' && typeof createProfileDto.naturalPerson === 'undefined'){
       return;
     }
     var user = await this.usersService.findOne(createProfileDto.userId);
@@ -25,16 +25,19 @@ export class ProfilesService {
       user: user,
       legalPerson: null,
       naturalPerson: null
-    })
+    });
+    console.log(profile);
     //Aqui creamos también el profile que se vincula,
-    if(createProfileDto.legalPerson != null){
+    if(typeof createProfileDto.legalPerson !== 'undefined'){
       //Creamos el profile de legalPerson
       profile.legalPerson = await this.legalPersonsService.create(createProfileDto.legalPerson);
     }
     else{
+      console.log(createProfileDto.naturalPerson);
       profile.naturalPerson = await this.naturalPersonsService.create(createProfileDto.naturalPerson);
     }
-    return await this.profileRepository.save(createProfileDto);
+    console.log(profile);
+    return await this.profileRepository.save(profile);
   }
 
   async findAll() {

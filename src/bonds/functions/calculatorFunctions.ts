@@ -13,6 +13,9 @@ export function gettir(aux: BondOutput){
   aux.calculatorInfo.forEach(el => {
     emmiterflowaux.push(el.emmiterFlow);
   })
+  //console.log(emmiterflowaux);
+  //console.log('TIR');
+  //console.log(irr(emmiterflowaux));
   return irr(emmiterflowaux);
 }
 function gettiraux(bondCalculatorInfo){
@@ -70,10 +73,10 @@ export function getduracionmod(BondInput){
 
 export function calculateData(data: BondInput): BondOutput {
   let output = {} as BondOutput;
-  console.log(data);
+  //console.log(data);
 
   const couponFrequency = frequencyToDay(data.couponFrequency);
-  console.log(couponFrequency);
+  //console.log(couponFrequency);
 
   const capitalization = frequencyToDay(data.capitalization);
 

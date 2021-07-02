@@ -15,6 +15,6 @@ export class NaturalPerson {
   @Column()
   dni: string;
 
-  @OneToOne(() => Profile, (profile) => profile.legalPerson)
+  @OneToOne(() => Profile, (profile) => profile.naturalPerson)
   profile: Profile;
 }
